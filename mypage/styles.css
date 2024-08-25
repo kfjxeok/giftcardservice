@@ -1,0 +1,158 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #E6F7FF;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px; /* Reduced padding for a thinner header */
+    background-color: #007BFF;
+    color: white;
+}
+
+.header .back-button {
+    background-color: #007BFF;
+    color: white;
+    font-size: 2em; /* Doubled font size */
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Adjusted width */
+    height: 40px; /* Adjusted height */
+}
+
+
+
+.header .menu {
+    font-size: 1.5em; /* Increased font size */
+}
+
+.profile {
+    text-align: center;
+    padding: 20px;
+    background-color: #BCE0FD;
+    color: #2699FB;    
+}
+
+.avatar {
+    background-color: #ccc;
+    border-radius: 50%;
+    width: 80px; /* Increased size */
+    height: 80px; /* Increased size */
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.edit-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.balance {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    color: #2699FB;
+    border-top: 1px solid #ccc;
+}
+
+.balance p {
+    font-size: 240%;
+}
+
+.transactions {
+    padding: 20px;
+    background-color: white;
+}
+
+.transaction {
+    background-color: #BCE0FD;
+    color: #2699FB;
+    margin-top: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 10px ;
+}
+
+input[type="search"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.header h1 {
+    font-size: 16px; /* Optionally reduce the font size if it still appears too large */
+}
+
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #F0F8FF; /* Light blue background */
+    padding: 20px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 10px; /* Add spacing between rows */
+}
+
+.bank-name {
+    width: fit-content;
+    font-size: 13px;
+    color: #4FA8F0; /* Blue color for text */
+
+}
+
+.number {
+    font-size: 14px;
+    color: #4FA8F0; /* Black color for the number */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px; /* 버튼을 상단에 위치시킵니다 */
+    right: 10px; /* 버튼을 우측에 위치시킵니다 */
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.side-menu {
+    width: 40%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    color: black;
+    right: -40%; /* 메뉴가 화면 밖에 위치하도록 함 */
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transition: right 0.3s ease; /* 애니메이션 효과 */
+}
+
+.side-menu.active {
+    right: 0; /* 메뉴가 화면 안으로 들어오도록 함 */
+}
+.side-menu ul {
+    list-style-type: none; /* 기본 마커 제거 */
+    padding: 0;
+    margin: 0;
+}
+.side-menu li {
+    padding: 10px; /* 각 항목의 패딩 추가 */
+    border-bottom: 1px solid #ccc; /* 구분선 추가 */
+}

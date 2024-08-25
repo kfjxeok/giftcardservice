@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+<title>PayU Profile</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function manageLoginState(){
+            var accessToken = sessionStorage.getItem('accessToken');
+                if (accessToken !== null && accessToken !== '') { //accessToken이 존재할 때.
+                    sessionStorage.clear("accessToken");          //session Clear. 
+                    alert('로그아웃 되었습니다.');
+                    location.href = "../sign/login.html"
+                } 
+                else {
+                    location.href = "../sign/login.html"
+                }
+        }
+    </script>
+</head>
+<body>
+<div class="header">
+    <button class="back-button">←</button>
+    <h1><a href ="../mypage/mypage.html">PayU</a></h1>
+    <div class="menu">≡</div>
+    <div class="side-menu">
+        <ul>
+            <li><button class="close-button">X</button></li>
+            <li><a href ="../mypage/mypage.html">내 프로필</a></li>
+            <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
+            <li>상품권 포인트 교환</li>
+            <li id = "loginBtn" onclick ="manageLoginState()"></li>
+            <script>
+                    function checkLoginState() {
+                        var loginBtn = document.getElementById('loginBtn');
+                        console.log(loginBtn);
+                        var accessToken = sessionStorage.getItem('accessToken');
+                        if (accessToken !== null && accessToken !== '') {
+                            loginBtn.innerHTML = "로그아웃";
+                        } 
+                        else {
+                            loginBtn.innerHTML = "로그인";
+                        }
+                    }
+               checkLoginState();
+            </script>
+        </ul>
+    </div>
+    <script>
+        document.querySelector('.menu').addEventListener('click', function() {
+            document.querySelector('.side-menu').classList.add('active');
+        });
+
+        document.querySelector('.close-button').addEventListener('click', function() {
+            document.querySelector('.side-menu').classList.remove('active');
+        });
+    </script>
+</div>
+<div class="gift-card-section">
+    <div class="gift-card">
+        <img src="giftcard1.jpg" alt="Gift Card 1">
+        <div class="gift-card-info">
+            <h2>Amazon Gift Card</h2>
+            <p>Price: 20000p</p>
+            <div class="quantity-controls">
+                <button class="quantity-decrease">-</button>
+                <input type="number" value="0" min="0">
+                <button class="quantity-increase">+</button>
+            </div>
+            <div class="purchase-info">
+                <p class="sales-quantity">남은 개수: 0</p>
+                <p class="total-price">결제 금액: 0원</p>
+            </div>
+            <button class="purchase-button" disabled>cancel</button>
+        </div>
+    </div>
+    <div class="gift-card">
+        <img src="giftcard2.jpg" alt="Gift Card 2">
+        <div class="gift-card-info">
+            <h2>Apple Gift Card</h2>
+            <p>Price: 15000p</p>
+            <div class="quantity-controls">
+                <button class="quantity-decrease">-</button>
+                <input type="number" value="0" min="0">
+                <button class="quantity-increase">+</button>
+            </div>
+            <div class="purchase-info">
+                <p class="sales-quantity">남은 개수: 0</p>
+                <p class="total-price">결제 금액: 0원</p>
+            </div>
+            <button class="purchase-button" disabled>cancel</button>
+        </div>
+</div>
+<script>
+    function updateQuantityControls() {
+        document.querySelectorAll('.quantity-decrease').forEach(button => {
+            button.addEventListener('click', function() {
+                let quantityInput = this.nextElementSibling;
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue > 0) {
+                    quantityInput.value = currentValue - 1;
+                }
+            });
+        });
+
+        document.querySelectorAll('.quantity-increase').forEach(button => {
+            button.addEventListener('click', function() {
+                let quantityInput = this.previousElementSibling;
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+            });
+        });
+    }
+
+    updateQuantityControls();
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+<title>PayU Profile</title>
+</head>
+<body>
+<div class="header">
+    <button class="back-button">←</button>
+    <h1><a href ="../mypage/mypage.html">PayU</a></h1>
+    <div class="menu">≡</div>
+    <div class="side-menu">
+        <ul>
+            <li><button class="close-button">X</button></li>
+            <li><a href ="../mypage/mypage.html">내 프로필</a></li>
+            <li>상품권 구매</li>
+            <li>상품권 포인트 교환</li>
+            <li id = "loginBtn"></li>
+            <script>
+                var accessToken = sessionStorage.getItem('accessToken');
+                if (accessToken !== null && accessToken !== '') {
+                    location.href="../mypage/mypage.html"
+                }
+                function checkLoginState() {
+                    var loginBtn = document.getElementById('loginBtn');
+                    console.log(loginBtn);
+                    if (accessToken !== null && accessToken !== '') {
+                        loginBtn.innerHTML = "로그아웃";
+                    } 
+                    else {
+                        loginBtn.innerHTML = "로그인";
+                    }
+                }
+                checkLoginState();
+            </script>
+        </ul>
+    </div>
+    <script>
+        document.querySelector('.menu').addEventListener('click', function() {
+            document.querySelector('.side-menu').classList.add('active');
+        });
+        
+        document.querySelector('.close-button').addEventListener('click', function() {
+            document.querySelector('.side-menu').classList.remove('active');
+        });
+        
+        </script>    
+</div>
+<form>
+    <div class="logo">Pay U</div>
+    <label for="clientEmail">이메일</label>
+    <input type="email" id="clientEmail" name="clientEmail">
+
+    <label for="passWord">비밀번호</label>
+    <input type="password" id="passWord" name="passWord">
+
+    <input type="button" onclick="login()" value="로그인">
+    <a href ='signup.html'>계정이 없으신가요?</a>
+</form>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function login() {
+    var clientEmail = document.getElementById('clientEmail').value;
+    var passWord = document.getElementById('passWord').value;
+
+    $.ajax({
+        method: 'POST',
+        url: 'http://localhost:8080/login/login',
+        contentType: 'application/json',
+        data: JSON.stringify({ "clientEmail": clientEmail, "passWord": passWord}),
+        success: function(response) {
+            console.log(response);
+            sessionStorage.setItem('accessToken', response.accessToken);
+            sessionStorage.setItem('role',response.role);
+            location.href='../mypage/mypage.html'
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+}
+</script>
+</body>
+</html>

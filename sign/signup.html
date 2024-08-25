@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+<title>PayU Profile</title>
+<script>
+    function manageLoginState(){
+        var accessToken = sessionStorage.getItem('accessToken');
+            if (accessToken !== null && accessToken !== '') {
+                sessionStorage.clear("accessToken");
+                alert('로그아웃 되었습니다.');
+            } 
+            else {
+                location.href = "../sign/login.html"
+            }
+    }
+</script>
+</head>
+<body>
+<div class="header">
+    <button class="back-button">←</button>
+    <h1><a href ="../mypage/mypage.html">PayU</a></h1>
+    <div class="menu">≡</div>
+    <div class="side-menu">
+        <ul>
+            <li><button class="close-button">X</button></li>
+            <li><a href ="../mypage/mypage.html">내 프로필</a></li>
+            <li>상품권 구매</li>
+            <li>상품권 포인트 교환</li>
+            <li id = "loginBtn"></li>
+            <script>
+
+                var accessToken = sessionStorage.getItem('accessToken');
+                if (accessToken !== null && accessToken !== '') {
+                    location.href="../mypage/mypage.html"
+                }
+                    function checkLoginState() {
+                        var loginBtn = document.getElementById('loginBtn');
+                        console.log(loginBtn);
+                        var accessToken = sessionStorage.getItem('accessToken');
+                        if (accessToken !== null && accessToken !== '') {
+                            loginBtn.innerHTML = "로그아웃";
+                        } 
+                        else {
+                            loginBtn.innerHTML = "로그인";
+                        }
+                    }
+               checkLoginState();
+            </script>
+        </ul>
+    </div>
+    <script>
+        document.querySelector('.menu').addEventListener('click', function() {
+            document.querySelector('.side-menu').classList.add('active');
+        });
+        
+        document.querySelector('.close-button').addEventListener('click', function() {
+            document.querySelector('.side-menu').classList.remove('active');
+        });
+        
+        </script>
+</div>
+<form id ="registrationForm'">
+    <div class="logo">Pay U</div>
+    <label for="clientName">이름</label>
+    <input type="text" id="clientName" name="clientName">
+
+    <label for="clientEmail">이메일</label>
+    <input type="email" id="clientEmail" name="clientEmail">
+
+    <label for="passWord">비밀번호</label>
+    <input type="password" id="passWord" name="passWord">
+
+    <label for="phoneNum">전화번호</label>
+    <input type="tel" id="phoneNum" name="phoneNum">
+
+    <label for="accountNum">계좌번호</label>
+    <input type="text" id="accountNum" name="accountNum">
+
+    <label for="">고객유형</label>
+    <select name="customertype" id="customertype">
+        <option value="customer">고객</option>
+        <option value="master">가맹주</option>
+    </select>
+    <br>
+    <br>
+    <input type="button" onclick = "signup()" value="회원가입">
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+function signup() {
+		var clientName = document.getElementById('clientName').value;
+		var clientEmail = document.getElementById('clientEmail').value;
+		var passWord = document.getElementById('passWord').value;
+		var phoneNumber = document.getElementById('phoneNum').value;
+		var accountNumber =  document.getElementById('accountNum').value;
+        var customertype = document.getElementById('customertype').value;
+
+		
+   $.ajax({
+        method: 'POST',
+        url: 'http://localhost:8080/login/signup',
+        contentType: 'application/json',
+	    data: JSON.stringify({ "clientName": clientName, "clientEmail": clientEmail, "passWord": passWord, "phoneNumber":phoneNumber, "accountNumber":accountNumber, "customertype":customertype}),
+        success: function(response) {
+            console.log(response);
+            alert(response);
+            //응답에 따른 페이지 넘어감 해줘야함
+            location.href='login.html';
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            alert(error);
+        }
+    });
+}
+</script>
+</body>
+</html>
