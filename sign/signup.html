@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const serverAddress = "http://localhost:8080";
+    </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="styles.css">
@@ -17,10 +20,18 @@
             }
     }
 </script>
+<script>
+    var previous_page = sessionStorage.getItem('prev');
+    function back(){
+        var previous_page = sessionStorage.getItem('prev');
+        sessionStorage.setItem('prev','/login/signup.html');
+        location.href=previous_page;
+    }
+</script>
 </head>
 <body>
 <div class="header">
-    <button class="back-button">←</button>
+    <button class="back-button" onclick="back()">←</button>
     <h1><a href ="../mypage/mypage.html">PayU</a></h1>
     <div class="menu">≡</div>
     <div class="side-menu">
@@ -103,7 +114,7 @@ function signup() {
 		
    $.ajax({
         method: 'POST',
-        url: 'http://localhost:8080/login/signup',
+        url: `${serverAddress}/login/signup`,
         contentType: 'application/json',
 	    data: JSON.stringify({ "clientName": clientName, "clientEmail": clientEmail, "passWord": passWord, "phoneNumber":phoneNumber, "accountNumber":accountNumber, "customertype":customertype}),
         success: function(response) {

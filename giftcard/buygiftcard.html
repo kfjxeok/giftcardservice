@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+    const serverAddress = "https://9747-121-135-192-209.ngrok-free.app";
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="styles.css">
@@ -27,7 +30,7 @@
                 var accessToken = sessionStorage.getItem('accessToken');
                 $.ajax({
                     method: 'POST',
-                    url: 'http://localhost:8080/giftcard/buy',
+                    url: `${serverAddress}/giftcard/buy`,
                     headers: {
                         "Authorization": "Bearer " + accessToken,
                         "Content-Type": "application/json"
@@ -80,7 +83,7 @@
     function loadGiftCard() {
         $.ajax({
             method: 'GET',
-            url: 'http://localhost:8080/giftcard',
+            url: `${serverAddress}/giftcard`,
             success: function(response) {
                 var giftCardSection = document.getElementById('gift-card-section');
                 console.log(response);
@@ -131,7 +134,6 @@
             <li><button class="close-button">X</button></li>
             <li><a href ="../mypage/mypage.html">내 프로필</a></li>
             <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-            <li>상품권 포인트 교환</li>
             <li id="loginBtn" onclick="manageLoginState()"></li>
             <script>
                 function checkLoginState() {
@@ -160,5 +162,15 @@
 </div>
 <div id="gift-card-section">
 </div>
+<script>
+    document.getElementById('loginBtn').addEventListener('click', function() {
+        var buttonText = this.textContent || this.innerText;
+        if (buttonText.trim() === '로그아웃') {
+            sessionStorage.clear();
+            console.log('로그아웃되었습니다.');
+            location.href = "../sign/login.html";
+        }
+    });
+</script>
 </body>
 </html>

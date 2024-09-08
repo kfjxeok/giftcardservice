@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const serverAddress = "https://9747-121-135-192-209.ngrok-free.app";
+    </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="styles.css">
 <title>PayU Profile</title>
+
+<script>
+    var previous_page = sessionStorage.getItem('prev');
+    function back(){
+        var previous_page = sessionStorage.getItem('prev');
+        sessionStorage.setItem('prev','/sign/login.html');
+        location.href=previous_page;
+    }
+</script>
 </head>
 <body>
 <div class="header">
-    <button class="back-button">←</button>
+    <button class="back-button" onclick="back()">←</button>
     <h1><a href ="../mypage/mypage.html">PayU</a></h1>
     <div class="menu">≡</div>
     <div class="side-menu">
@@ -16,7 +28,6 @@
             <li><button class="close-button">X</button></li>
             <li><a href ="../mypage/mypage.html">내 프로필</a></li>
             <li>상품권 구매</li>
-            <li>상품권 포인트 교환</li>
             <li id = "loginBtn"></li>
             <script>
                 var accessToken = sessionStorage.getItem('accessToken');
@@ -69,7 +80,7 @@ function login() {
 
     $.ajax({
         method: 'POST',
-        url: 'http://localhost:8080/login/login',
+        url: `${serverAddress}/login/login`,
         contentType: 'application/json',
         data: JSON.stringify({ "clientEmail": clientEmail, "passWord": passWord}),
         success: function(response) {

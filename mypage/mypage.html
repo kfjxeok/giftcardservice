@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        const serverAddress = "https://9747-121-135-192-209.ngrok-free.app";
+    </script>
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,24 +20,25 @@
     </script>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
-    function manageLoginState() {
-        var accessToken = sessionStorage.getItem('accessToken');
-        if (accessToken !== null && accessToken !== '') {
-            sessionStorage.clear("accessToken");
-            alert('로그아웃 되었습니다.');
-            location.href = "../sign/login.html";
-        } else {
-            location.href = "../sign/login.html";
-        }
-    }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        function manageLoginState() {
+            var accessToken = sessionStorage.getItem('accessToken');
+            if (accessToken !== null && accessToken !== '') {
+                sessionStorage.clear("accessToken");
+                alert('로그아웃 되었습니다.');
+                location.href = "../sign/login.html";
+            } else {
+                location.href = "../sign/login.html";
+            }
+        }
+    
     function mypage() {
         var accessToken = sessionStorage.getItem('accessToken');
         console.log(accessToken);
         $.ajax({
             method: 'GET',
-            url: 'http://localhost:8080/client/me',
+            url: `${serverAddress}/client/me`,
             headers: {'Authorization': 'Bearer ' + accessToken},
             success: function(response) {
                 console.log(response);
@@ -56,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
-                alert('정보를 가져오는 데 실패했습니다. 다시 로그인해주세요.');
                 location.href = "../sign/login.html";
             }
         });
@@ -139,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 <li><button class="close-button">X</button></li>
                 <li><a href ="../mypage/mypage.html">내 프로필</a></li>
                 <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-                <li>상품권 포인트 교환</li>
                 <li id="loginBtn"></li>
                 <li id="makeGiftCardBtn"></li>
             </ul>
@@ -170,5 +172,15 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="transactions">
         <input type="search" id="searchInput" placeholder="상품권 검색">
     </div>
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            var buttonText = this.textContent || this.innerText;
+            if (buttonText.trim() === '로그아웃') {
+                sessionStorage.clear();
+                console.log('로그아웃되었습니다.');
+                location.href = "../sign/login.html";
+            }
+        });
+    </script>
 </body>
 </html>

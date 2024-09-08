@@ -1,67 +1,67 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="styles.css">
-        <link rel="stylesheet" href="use.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            var role = sessionStorage.getItem("role");
-            if(role!="ROLE_MASTER"){
-                location.href="/sign/login.html"
-            }
 
-            
-        
-
-        </script>
-        <script>
+<head>
+    <script>
+        const serverAddress = "http://localhost:8080";
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="use.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var role = sessionStorage.getItem("role");
+        if (role != "ROLE_MASTER") {
+            location.href = "/sign/login.html"
+        }
+    </script>
+    <script>
         const urlParams = new URLSearchParams(window.location.search);
         const token = "eyJhbGciOiJIUzUxMiJ9.eyJnaWZ0Q2FyZE5hbWUiOiJhYSIsInVzZXJuYW1lIjoibWFzdGVyMTIzNEBuYXZlci5jb20iLCJpYXQiOjE3MjU3ODk4MzYsImV4cCI6MTcyNjAwNTgzNn0.foc8XCzYIW_FlK9hcvXPmUK-qFMfjLCggAUp7Ba-UbQH8URO-5X8JujMX2EdM0bgsahMCQdjkgG2NWrl8LQWUQ"; //urlParams.get('token');
         const giftCardName = urlParams.get('giftCardName');
         const accessToken = sessionStorage.getItem("accessToken");
         function useItem() {
-            const url = `http://localhost:8080/generateQRCode/useGiftCard?token=${token}`
+            const url = `${serverAddress}/generateQRCode/useGiftCard?token=${token}`
             $.ajax({
-            method: 'POST',
-            url: url,
-            headers: {'Authorization': 'Bearer ' + accessToken},
-            success: function(response) {
-                console.log(response)
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-            }
-        });
+                method: 'POST',
+                url: url,
+                headers: { 'Authorization': 'Bearer ' + accessToken },
+                success: function (response) {
+                    console.log(response)
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
         }
 
         function cancel() {
-            alert("취소 버튼이 클릭되었습니다.");
+            location.href = "/mypage/mypage.html";
         }
     </script>
-    </head>    
+</head>
 
-    <body>
-        <div class="header">
-            <button class="back-button" onclick="back()">←</button>
-            <h1><a href ="../mypage/mypage.html">PayU</a></h1>
-            <div class="menu">≡</div>
-            <div class="side-menu">
-                <ul>
-                    <li><button class="close-button">X</button></li>
-                    <li><a href ="../mypage/mypage.html">내 프로필</a></li>
-                    <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-                    <li>상품권 포인트 교환</li>
-                    <li id="loginBtn"></li>
-                    <li id="makeGiftCardBtn"></li>
-                </ul>
-            </div>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="back()">←</button>
+        <h1><a href="../mypage/mypage.html">PayU</a></h1>
+        <div class="menu">≡</div>
+        <div class="side-menu">
+            <ul>
+                <li><button class="close-button">X</button></li>
+                <li><a href="../mypage/mypage.html">내 프로필</a></li>
+                <li><a href='../giftcard/buygiftcard.html'>상품권 구매</a></li>
+                <li id="loginBtn"></li>
+                <li id="makeGiftCardBtn"></li>
+            </ul>
         </div>
+    </div>
 
-        <!-- 사용 및 취소 버튼 추가 -->
-        <div class="buttons">
-            <button class="use-button" onclick="useItem()">사용</button>
-            <button class="cancel-button" onclick="cancel()">취소</button>
-        </div>
+    <!-- 사용 및 취소 버튼 추가 -->
+    <div class="buttons">
+        <button class="use-button" onclick="useItem()">사용</button>
+        <button class="cancel-button" onclick="cancel()">취소</button>
+    </div>
 
-    
-    </body>
+
+</body>
+
 </html>

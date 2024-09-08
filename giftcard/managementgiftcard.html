@@ -38,7 +38,6 @@
             <li><button class="close-button">X</button></li>
             <li><a href ="../mypage/mypage.html">내 프로필</a></li>
             <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-            <li>상품권 포인트 교환</li>
             <li id = "loginBtn" onclick ="manageLoginState()"></li>
             <script>
                     function checkLoginState() {
@@ -122,6 +121,16 @@
     }
 
     updateQuantityControls();
+</script>
+<script>
+    document.getElementById('loginBtn').addEventListener('click', function() {
+        var buttonText = this.textContent || this.innerText;
+        if (buttonText.trim() === '로그아웃') {
+            sessionStorage.clear();
+            console.log('로그아웃되었습니다.');
+            location.href = "../sign/login.html";
+        }
+    });
 </script>
 </body>
 </html>

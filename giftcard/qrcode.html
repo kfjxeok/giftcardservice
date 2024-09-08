@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <script>
+        const serverAddress = "http://localhost:8080";    
         var previous_page = sessionStorage.getItem('prev');
         function back(){
             var previous_page = sessionStorage.getItem('prev');
@@ -16,7 +17,6 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-    
     </script>
 </head>
 <body>
@@ -26,19 +26,16 @@
         <div class="menu">≡</div>
         <div class="side-menu">
             <ul>
-                <li><button class="close-button">X</button></li>
+                <li><button class="close-button">X</button></li>   
                 <li><a href ="../mypage/mypage.html">내 프로필</a></li>
                 <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-                <li>상품권 포인트 교환</li>
                 <li id="loginBtn"></li>
                 <li id="makeGiftCardBtn"></li>
             </ul>
         </div>
     </div>
-    <div class="header">
-    </div>
-    <div id="qrCodeContainer">
-    </div>
+    <div class="header"></div>
+    <div id="qrCodeContainer"></div>
     <script>
         $(document).ready(function() {
             var urlParams = new URLSearchParams(window.location.search);
@@ -48,7 +45,7 @@
             if (giftcardId && accessToken) {
                 $.ajax({
                     method: 'GET',
-                    url: `http://localhost:8080/generateQRCode`,
+                    url: `${serverAddress}/generateQRCode`,
                     headers: {'Authorization': 'Bearer ' + accessToken},
                     data: { giftCardName: giftcardId },
                     success: function(response) {
@@ -64,6 +61,16 @@
             } else {
                 alert('잘못된 접근입니다.');
                 window.location.href = "../mypage/mypage.html";
+            }
+        });
+    </script>
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            var buttonText = this.textContent || this.innerText;
+            if (buttonText.trim() === '로그아웃') {
+                sessionStorage.clear();
+                console.log('로그아웃되었습니다.');
+                location.href = "../sign/login.html";
             }
         });
     </script>

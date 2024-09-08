@@ -1,73 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
+        const serverAddress = "https://9747-121-135-192-209.ngrok-free.app";
+    </script>
+    <script>
         var previous_page = sessionStorage.getItem('prev');
-        function back(){
+        function back() {
             var previous_page = sessionStorage.getItem('prev');
-            sessionStorage.setItem('prev','/giftcard/makegiftcard.html');
-            location.href=previous_page;
+            sessionStorage.setItem('prev', '/giftcard/makegiftcard.html');
+            location.href = previous_page;
         }
     </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
-<title>PayU Profile</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function manageLoginState(){
-        var accessToken = sessionStorage.getItem('accessToken');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>PayU Profile</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function manageLoginState() {
+            var accessToken = sessionStorage.getItem('accessToken');
             if (accessToken !== null && accessToken !== '') { //accessToken이 존재할 때.
                 sessionStorage.clear("accessToken");          //session Clear. 
                 alert('로그아웃 되었습니다.');
                 location.href = "../sign/login.html"
-            } 
+            }
             else {
                 location.href = "../sign/login.html"
             }
-    }
-</script>
+        }
+    </script>
 </head>
-<body>
-<div class="header">
-    <button class="back-button" onclick="back()">←</button>
 
-    <h1><a href ="../mypage/mypage.html">PayU</a></h1>
-    <div class="menu">≡</div>
-    <div class="side-menu">
-        <ul>
-            <li><button class="close-button">X</button></li>
-            <li><a href ="../mypage/mypage.html">내 프로필</a></li>
-            <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-            <li>상품권 포인트 교환</li>
-            <li id = "loginBtn" onclick="manageLoginState()"></li>
-            <script>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="back()">←</button>
+
+        <h1><a href="../mypage/mypage.html">PayU</a></h1>
+        <div class="menu">≡</div>
+        <div class="side-menu">
+            <ul>
+                <li><button class="close-button">X</button></li>
+                <li><a href="../mypage/mypage.html">내 프로필</a></li>
+                <li><a href='../giftcard/buygiftcard.html'>상품권 구매</a></li>
+                <li id="loginBtn" onclick="manageLoginState()"></li>
+                <script>
                     function checkLoginState() {
                         var loginBtn = document.getElementById('loginBtn');
                         console.log(loginBtn);
                         var accessToken = sessionStorage.getItem('accessToken');
                         if (accessToken !== null && accessToken !== '') {
                             loginBtn.innerHTML = "로그아웃";
-                        } 
+                        }
                         else {
                             loginBtn.innerHTML = "로그인";
                         }
                     }
-               checkLoginState();
-            </script>
-        </ul>
-    </div>
-    <script>
-        document.querySelector('.menu').addEventListener('click', function() {
-            document.querySelector('.side-menu').classList.add('active');
-        });
+                    checkLoginState();
+                </script>
+            </ul>
+        </div>
+        <script>
+            document.querySelector('.menu').addEventListener('click', function () {
+                document.querySelector('.side-menu').classList.add('active');
+            });
 
-        document.querySelector('.close-button').addEventListener('click', function() {
-            document.querySelector('.side-menu').classList.remove('active');
-        });
-    </script>
-</div>
-    <form id ="registrationForm'">
+            document.querySelector('.close-button').addEventListener('click', function () {
+                document.querySelector('.side-menu').classList.remove('active');
+            });
+        </script>
+    </div>
+    <form id="registrationForm'">
         <div class="logo">Pay U</div>
         <label for="giftcardName">상호명</label>
         <input type="text" id="giftcardName" name="giftcardName">
@@ -83,35 +87,46 @@
 
         <label for="">이미지</label>
         <input type="file" id="image" name="image">
-        <input type="button" onclick = "makeGiftCard()" value="생성하기">
+        <input type="button" onclick="makeGiftCard()" value="생성하기">
     </form>
     <script>
 
         function makeGiftCard() {
-                var gitfcardName = document.getElementById('giftcardName').value;
-                //나머지 적으셈
-                var point = document.getElementById('point').value;
-                var amount = document.getElementById('amount').value;
-                var count = document.getElementById('count').value;
-                var image = document.getElementById('image').value;
-           
+            var gitfcardName = document.getElementById('giftcardName').value;
+            //나머지 적으셈
+            var point = document.getElementById('point').value;
+            var amount = document.getElementById('amount').value;
+            var count = document.getElementById('count').value;
+            var image = document.getElementById('image').value;
+
             $.ajax({
                 method: 'POST',
-                url: 'http://localhost:8080/giftcard',
+                url: `${serverAddress}/giftcard`,
                 contentType: 'application/json',
-                data: JSON.stringify({"name": gitfcardName, "amount": amount, "point": point, "count":count}),
-                success: function(response) {
+                data: JSON.stringify({ "name": gitfcardName, "amount": amount, "point": point, "count": count }),
+                success: function (response) {
                     console.log(response);
                     alert(response);
                     //응답에 따른 페이지 넘어감 해줘야함
-                    location.href='./buygiftcard.html';
+                    location.href = './buygiftcard.html';
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error:', error);
                     alert(error);
                 }
             });
         }
-        </script>
+    </script>
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', function () {
+            var buttonText = this.textContent || this.innerText;
+            if (buttonText.trim() === '로그아웃') {
+                sessionStorage.clear();
+                console.log('로그아웃되었습니다.');
+                location.href = "../sign/login.html";
+            }
+        });
+    </script>
 </body>
+
 </html>
