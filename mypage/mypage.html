@@ -8,6 +8,15 @@
     <title>PayU Profile</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        var previous_page = sessionStorage.getItem('prev');
+        function back(){
+            var previous_page = sessionStorage.getItem('prev');
+            sessionStorage.setItem('prev','/mypage/mypage.html');
+            location.href=previous_page;
+        }
+    </script>
+
+    <script>
 document.addEventListener("DOMContentLoaded", function() {
     function manageLoginState() {
         var accessToken = sessionStorage.getItem('accessToken');
@@ -122,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </head>
 <body>
     <div class="header">
-        <button class="back-button">←</button>
+        <button class="back-button" onclick="back()">←</button>
         <h1><a href ="../mypage/mypage.html">PayU</a></h1>
         <div class="menu">≡</div>
         <div class="side-menu">

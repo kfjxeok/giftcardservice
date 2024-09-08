@@ -7,6 +7,14 @@
 <title>PayU Profile</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+        var previous_page = sessionStorage.getItem('prev');
+        function back(){
+            var previous_page = sessionStorage.getItem('prev');
+            sessionStorage.setItem('prev','/giftcard/buygiftcard.html');
+            location.href=previous_page;
+        }
+</script>
+<script>
     function Purchase() {
         console.log("성공");
         document.querySelectorAll('.purchase-button').forEach(button => {
@@ -115,7 +123,7 @@
 </head>
 <body>
 <div class="header">
-    <button class="back-button">←</button>
+    <button class="back-button" onclick="back()">←</button>
     <h1><a href ="../mypage/mypage.html">PayU</a></h1>
     <div class="menu">≡</div>
     <div class="side-menu">

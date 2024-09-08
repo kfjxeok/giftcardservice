@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <script>
+        var previous_page = sessionStorage.getItem('prev');
+        function back(){
+            var previous_page = sessionStorage.getItem('prev');
+            sessionStorage.setItem('prev','/giftcard/qrcode.html');
+            location.href=previous_page;
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code</title>
+    <link rel="stylesheet" href="qr.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    
+    </script>
 </head>
 <body>
     <div class="header">
-        <h1>기프트카드 사용</h1>
+        <button class="back-button" onclick="back()">←</button>
+        <h1><a href ="../mypage/mypage.html">PayU</a></h1>
+        <div class="menu">≡</div>
+        <div class="side-menu">
+            <ul>
+                <li><button class="close-button">X</button></li>
+                <li><a href ="../mypage/mypage.html">내 프로필</a></li>
+                <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
+                <li>상품권 포인트 교환</li>
+                <li id="loginBtn"></li>
+                <li id="makeGiftCardBtn"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="header">
     </div>
     <div id="qrCodeContainer">
     </div>

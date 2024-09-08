@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        var previous_page = sessionStorage.getItem('prev');
+        function back(){
+            var previous_page = sessionStorage.getItem('prev');
+            sessionStorage.setItem('prev','/giftcard/makegiftcard.html');
+            location.href=previous_page;
+        }
+    </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="styles.css">
@@ -22,7 +30,8 @@
 </head>
 <body>
 <div class="header">
-    <button class="back-button">←</button>
+    <button class="back-button" onclick="back()">←</button>
+
     <h1><a href ="../mypage/mypage.html">PayU</a></h1>
     <div class="menu">≡</div>
     <div class="side-menu">
