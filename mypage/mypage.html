@@ -1,211 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
-<title>PayU Profile</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function manageLoginState(){
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>PayU Profile</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    function manageLoginState() {
         var accessToken = sessionStorage.getItem('accessToken');
-            if (accessToken !== null && accessToken !== '') { //accessToken이 존재할 때.
-                sessionStorage.clear("accessToken");          //session Clear. 
-                alert('로그아웃 되었습니다.');
-                location.href = "../sign/login.html"
-            }
-            else {
-                location.href = "../sign/login.html"
-            }
+        if (accessToken !== null && accessToken !== '') {
+            sessionStorage.clear("accessToken");
+            alert('로그아웃 되었습니다.');
+            location.href = "../sign/login.html";
+        } else {
+            location.href = "../sign/login.html";
+        }
     }
-</script>
-<script>
-window.onload=function mypage() {
-    var accessToken = sessionStorage.getItem('accessToken');
-	console.log(accessToken);
-   $.ajax({
-        method: 'GET',
-        url: 'http://localhost:8080/client/me',
-        headers: {'Authorization':'Bearer '+accessToken},
-         success: function(response) {
-            console.log(response);
-            console.log(response.body);
-            //응답에 따른 페이지 넘어감 해줘야함
-            var name=response.name;
-            var point=response.point;
-            document.getElementById('name').innerHTML=name;
-            document.getElementById('point').innerHTML=point+' P';
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            alert(error);
+
+    function mypage() {
+        var accessToken = sessionStorage.getItem('accessToken');
+        console.log(accessToken);
+        $.ajax({
+            method: 'GET',
+            url: 'http://localhost:8080/client/me',
+            headers: {'Authorization': 'Bearer ' + accessToken},
+            success: function(response) {
+                console.log(response);
+                document.getElementById('name').innerHTML = response.name;
+                document.getElementById('point').innerHTML = response.point + ' P';
+
+                var transactionsContainer = document.querySelector('.transactions');
+                response.giftcards.forEach(function(giftcard) {
+                    var transactionElement = document.createElement('div');
+                    transactionElement.className = 'transaction';
+                    transactionElement.setAttribute('data-giftcard-name', giftcard.name.toLowerCase());
+                    transactionElement.innerHTML = `
+                        <h4>${giftcard.name}</h4>
+                        <p>${giftcard.point}원 - ${giftcard.quantity} 개</p>
+                        <button class="use-button" data-giftcard-id="${giftcard.name}">사용</button>
+                    `;
+                    transactionsContainer.appendChild(transactionElement);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('정보를 가져오는 데 실패했습니다. 다시 로그인해주세요.');
+                location.href = "../sign/login.html";
+            }
+        });
+    }
+
+    function generateQRCode(giftcardId) {
+        window.location.href = `../giftcard/qrcode.html?giftcardId=${giftcardId}`;
+    }
+
+    function checkMaster() {
+        var role = sessionStorage.getItem('role');
+        if (role == "ROLE_MASTER") {
+            var mgcbtn = document.getElementById('makeGiftCardBtn');
+            mgcbtn.innerHTML = `<a href ='../giftcard/makegiftcard.html'>상품권 생성하기</a>`;
+        }
+    }
+
+    function checkLoginState() {
+        var loginBtn = document.getElementById('loginBtn');
+        var accessToken = sessionStorage.getItem('accessToken');
+        if (accessToken !== null && accessToken !== '') {
+            loginBtn.innerHTML = "로그아웃";
+        } else {
+            loginBtn.innerHTML = "로그인";
+        }
+    }
+
+    function filterGiftCards() {
+        var searchInput = document.getElementById('searchInput').value.toLowerCase();
+        var giftcards = document.querySelectorAll('.transaction');
+
+        giftcards.forEach(function(giftcard) {
+            var giftcardName = giftcard.getAttribute('data-giftcard-name');
+            if (giftcardName.includes(searchInput)) {
+                giftcard.style.display = 'block';
+            } else {
+                giftcard.style.display = 'none';
+            }
+        });
+    }
+
+    document.querySelector('.transactions').addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('use-button')) {
+            var giftcardId = event.target.getAttribute('data-giftcard-id');
+            if (giftcardId) {
+                generateQRCode(giftcardId);
+            } else {
+                console.error('Giftcard ID is missing!');
+            }
         }
     });
-}
-</script>
+
+    // 함수들을 호출합니다.
+    mypage();
+    checkMaster();
+    checkLoginState();
+
+    document.querySelector('.menu').addEventListener('click', function() {
+        document.querySelector('.side-menu').classList.add('active');
+    });
+
+    document.querySelector('.close-button').addEventListener('click', function() {
+        document.querySelector('.side-menu').classList.remove('active');
+    });
+
+    // Event listener for search input
+    document.getElementById('searchInput').addEventListener('input', filterGiftCards);
+});
+
+
+    </script>
 </head>
 <body>
-<div class="header">
-    <button class="back-button">←</button>
-    <h1><a href ="../mypage/mypage.html">PayU</a></h1>
-    <div class="menu">≡</div>
-    <div class="side-menu">
-        <ul>
-            <li><button class="close-button">X</button></li>
-            <li><a href ="../mypage/mypage.html">내 프로필</a></li>
-            <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
-            <li>상품권 포인트 교환</li>
-            <li id = "loginBtn"></li>
-            <li id =  "makeGiftCardBtn"></li>
-        </ul>
-        <script>
-            function checkMaster(){
-                var role = sessionStorage.getItem('role');
-                if (role == "ROLE_MASTER"){
-                       var mgcbtn = document.getElementById('makeGiftCardBtn');
-                       mgcbtn.innerHTML+= `<a href ='../giftcard/makegiftcard.html'>상품권 생성하기</a>`;
-                }
-            }
-            function checkLoginState() {
-                console.log('abc');
-                var loginBtn = document.getElementById('loginBtn');
-                console.log(loginBtn);
-                var accessToken = sessionStorage.getItem('accessToken');
-                if (accessToken !== null && accessToken !== '') {
-                    loginBtn.innerHTML = "로그아웃";
-                } 
-                else {
-                    loginBtn.innerHTML = "로그인";
-                }
-            }
-            checkMaster();
-            checkLoginState();
-    </script>
-    </div>
-    <script>
-        document.querySelector('.menu').addEventListener('click', function() {
-            document.querySelector('.side-menu').classList.add('active');
-        });
-        
-        document.querySelector('.close-button').addEventListener('click', function() {
-            document.querySelector('.side-menu').classList.remove('active');
-        });
-        
-        </script>    
-</div>
-<div class="profile">
-    <div class="avatar"></div>
-    <h2 id="name"></h2>
-    <p>Seoul, KR</p>
-    <button class="edit-button">EDIT</button>
-</div>
-<div class="balance">
-    <h3>보유 포인트</h3>
-    <p id="point"></p>
-</div>
-<div class="stats-container">
-    <div class="stat">
-        <p class="bank-name">연동은행</p>
-        <p class="bank-name">기업은행</p>
-    </div>
-    <div class="stat">
-        <p class="bank-name">상품권 수</p>
-        <div class="stat-detail">
-            <p class="number">26</p>
+    <div class="header">
+        <button class="back-button">←</button>
+        <h1><a href ="../mypage/mypage.html">PayU</a></h1>
+        <div class="menu">≡</div>
+        <div class="side-menu">
+            <ul>
+                <li><button class="close-button">X</button></li>
+                <li><a href ="../mypage/mypage.html">내 프로필</a></li>
+                <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
+                <li>상품권 포인트 교환</li>
+                <li id="loginBtn"></li>
+                <li id="makeGiftCardBtn"></li>
+            </ul>
         </div>
     </div>
-</div>
-<div class="transactions">
-    <input type="search" placeholder="상품권 검색">
-    <div class="transaction">
-        <h4>배달의 민족</h4>
-        <p>20000원</p>
-        <div id = "kakaotalk-sharing-btn">공유하기</div>
-        <script>
-            Kakao.init('574bb62d6ae1854eefef86fac8448ae4');
-            Kakao.Share.createDefaultButton({
-            container: '#kakaotalk-sharing-btn',
-            objectType: 'feed',
-            content: {
-                title: '오늘의 디저트',
-                description: '아메리카노, 빵, 케익',
-                imageUrl:
-                'https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
-                link: {
-                mobileWebUrl: 'https://developers.kakao.com',
-                webUrl: 'https://developers.kakao.com',
-                },
-            },
-            itemContent: {
-                profileText: 'Kakao',
-                profileImageUrl: 'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
-                titleImageUrl: 'https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
-                titleImageText: 'Cheese cake',
-                titleImageCategory: 'Cake',
-                items: [
-                {
-                    item: 'Cake1',
-                    itemOp: '1000원',
-                },
-                {
-                    item: 'Cake2',
-                    itemOp: '2000원',
-                },
-                {
-                    item: 'Cake3',
-                    itemOp: '3000원',
-                },
-                {
-                    item: 'Cake4',
-                    itemOp: '4000원',
-                },
-                {
-                    item: 'Cake5',
-                    itemOp: '5000원',
-                },
-                ],
-                sum: 'Total',
-                sumOp: '15000원',
-            },
-            social: {
-                likeCount: 10,
-                commentCount: 20,
-                sharedCount: 30,
-            },
-            buttons: [
-                {
-                title: '웹으로 이동',
-                link: {
-                    mobileWebUrl: 'https://developers.kakao.com',
-                    webUrl: 'https://developers.kakao.com',
-                },
-                },
-                {
-                title: '앱으로 이동',
-                link: {
-                    mobileWebUrl: 'https://developers.kakao.com',
-                    webUrl: 'https://developers.kakao.com',
-                },
-                },
-            ],
-            });
-        </script>
-        
+    <div class="profile">
+        <div class="avatar"></div>
+        <h2 id="name"></h2>
+        <p>Seoul, KR</p>
+        <button class="edit-button">EDIT</button>
     </div>
-    <div class="transaction">
-        <h4>요기요</h4>
-        <p>40000원</p>
+    <div class="balance">
+        <h3>보유 포인트</h3>
+        <p id="point"></p>
     </div>
-    <div class="transaction">
-        <h4>쿠팡이츠</h4>
-        <p>30000원</p>
+    <div class="stats-container">
+        <div class="stat">
+            <p class="bank-name">연동은행</p>
+            <p class="bank-name">기업은행</p>
+        </div>
+        <div class="stat">
+            <p class="bank-name">상품권 수</p>
+            <div class="stat-detail">
+                <p class="number">26</p>
+            </div>
+        </div>
     </div>
-    <div class="transaction">
-        <h4>쿠팡</h4>
-        <p>25000원</p>
+    <div class="transactions">
+        <input type="search" id="searchInput" placeholder="상품권 검색">
     </div>
-</div>
-</div>
 </body>
 </html>

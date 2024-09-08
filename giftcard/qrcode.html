@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>기프트카드 사용</h1>
+    </div>
+    <div id="qrCodeContainer">
+    </div>
+    <script>
+        $(document).ready(function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var giftcardId = urlParams.get('giftcardId');
+            var accessToken = sessionStorage.getItem('accessToken');
+
+            if (giftcardId && accessToken) {
+                $.ajax({
+                    method: 'GET',
+                    url: `http://localhost:8080/generateQRCode`,
+                    headers: {'Authorization': 'Bearer ' + accessToken},
+                    data: { giftCardName: giftcardId },
+                    success: function(response) {
+                        var qrCodeImg = document.createElement('img');
+                        qrCodeImg.src = 'data:image/png;base64,' + response.image; // Base64 이미지를 사용
+                        document.getElementById('qrCodeContainer').appendChild(qrCodeImg);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('QR 코드 생성에 실패했습니다.');
+                    }
+                });
+            } else {
+                alert('잘못된 접근입니다.');
+                window.location.href = "../mypage/mypage.html";
+            }
+        });
+    </script>
+</body>
+</html>

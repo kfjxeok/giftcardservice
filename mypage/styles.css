@@ -156,3 +156,22 @@ input[type="search"] {
     padding: 10px; /* 각 항목의 패딩 추가 */
     border-bottom: 1px solid #ccc; /* 구분선 추가 */
 }
+
+.use-button {
+    background-color: #007bff; /* Primary color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+    display: inline-block;
+    text-align: center;
+}
+
+.use-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+}

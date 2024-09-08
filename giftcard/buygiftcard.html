@@ -7,43 +7,50 @@
 <title>PayU Profile</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function Purchase(){
+    function Purchase() {
+        console.log("성공");
         document.querySelectorAll('.purchase-button').forEach(button => {
             button.addEventListener('click', function() {
+                console.log("이벤트 감지");
                 var name = this.getAttribute('data-name');
                 var point = this.getAttribute('data-point');
                 var quantity = this.closest('.gift-card-info').querySelector('input[type="number"]').value;
-                //여기 ajax문 마무리해오셈.
+                console.log(name, point, quantity);
+                var accessToken = sessionStorage.getItem('accessToken');
                 $.ajax({
-                method: 'POST',
-                url: 'http://localhost:8080/purchase',
-                headers:' '
-                data: {
-                    //여기 dto맞춰서 전달해주고.
-                },
-                success: function(response) {
-                    alert(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    alert('구매 실패.: ' + error);
-                }
+                    method: 'POST',
+                    url: 'http://localhost:8080/giftcard/buy',
+                    headers: {
+                        "Authorization": "Bearer " + accessToken,
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify({
+                        "name": name,
+                        "count": quantity
+                    }),
+                    success: function(response) {
+                        alert(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('구매 실패: ' + error);
+                    }
+                });
             });
         });
-    });
-}
-    
-    function manageLoginState(){
-        var accessToken = sessionStorage.getItem('accessToken');
-            if (accessToken !== null && accessToken !== '') { //accessToken이 존재할 때.
-                sessionStorage.clear("accessToken");          //session Clear. 
-                alert('로그아웃 되었습니다.');
-                location.href = "../sign/login.html"
-            }
-            else {
-                location.href = "../sign/login.html"
-            }
     }
+
+    function manageLoginState() {
+        var accessToken = sessionStorage.getItem('accessToken');
+        if (accessToken !== null && accessToken !== '') { // accessToken이 존재할 때.
+            sessionStorage.clear("accessToken");          // session Clear.
+            alert('로그아웃 되었습니다.');
+            location.href = "../sign/login.html";
+        } else {
+            location.href = "../sign/login.html";
+        }
+    }
+
     function updateQuantityControls() {
         document.querySelectorAll('.quantity-decrease').forEach(button => {
             button.addEventListener('click', function() {
@@ -61,6 +68,49 @@
             });
         });
     }
+
+    function loadGiftCard() {
+        $.ajax({
+            method: 'GET',
+            url: 'http://localhost:8080/giftcard',
+            success: function(response) {
+                var giftCardSection = document.getElementById('gift-card-section');
+                console.log(response);
+                response.forEach(giftcard => {
+                    var name = giftcard.name;
+                    var amount = giftcard.amount;
+                    var point = giftcard.point;
+                    var count = giftcard.count;
+                    var giftcardHTML = 
+                    `<div class="gift-card">
+                        <div class="gift-card-info">
+                            <h2>${name}</h2>
+                            <p>Price: ${amount}p</p>
+                            <div class="quantity-controls">
+                                <button class="quantity-decrease">-</button>
+                                <input type="number" value="0" min="0">
+                                <button class="quantity-increase">+</button>
+                            </div>
+                            <div class="purchase-info">
+                                <p class="sales-quantity">남은 개수: ${count}</p>
+                                <p class="total-price">결제 금액: ${point}원</p>
+                            </div>
+                            <button class="purchase-button" data-name="${name}" data-point="${point}">Buy</button>
+                        </div>
+                    </div>`;
+                    giftCardSection.innerHTML += giftcardHTML;
+                });
+                updateQuantityControls();
+                Purchase(); // 이벤트 리스너 설정을 여기에 한 번만 호출
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert(error);
+            }
+        });
+    }
+
+    loadGiftCard(); // 페이지 로드 시 기프트카드 로드
 </script>
 </head>
 <body>
@@ -74,20 +124,19 @@
             <li><a href ="../mypage/mypage.html">내 프로필</a></li>
             <li><a href ='../giftcard/buygiftcard.html'>상품권 구매</a></li>
             <li>상품권 포인트 교환</li>
-            <li id = "loginBtn" onclick ="manageLoginState()"></li>
+            <li id="loginBtn" onclick="manageLoginState()"></li>
             <script>
-                    function checkLoginState() {
-                        var loginBtn = document.getElementById('loginBtn');
-                        console.log(loginBtn);
-                        var accessToken = sessionStorage.getItem('accessToken');
-                        if (accessToken !== null && accessToken !== '') {
-                            loginBtn.innerHTML = "로그아웃";
-                        } 
-                        else {
-                            loginBtn.innerHTML = "로그인";
-                        }
+                function checkLoginState() {
+                    var loginBtn = document.getElementById('loginBtn');
+                    console.log(loginBtn);
+                    var accessToken = sessionStorage.getItem('accessToken');
+                    if (accessToken !== null && accessToken !== '') {
+                        loginBtn.innerHTML = "로그아웃";
+                    } else {
+                        loginBtn.innerHTML = "로그인";
                     }
-               checkLoginState();
+                }
+                checkLoginState();
             </script>
         </ul>
     </div>
@@ -103,48 +152,5 @@
 </div>
 <div id="gift-card-section">
 </div>
-<script>
-    function loadGiftCard(){
-        $.ajax({
-        method: 'GET',
-        url: 'http://localhost:8080/giftcard',
-        success: function(response) {
-            var giftCardSection = document.getElementById('gift-card-section');
-            console.log(response);
-            for(let i=0;i<response.length;i++){
-                var name = response[i].name;
-                var amount = response[i].amount;
-                var point = response[i].point;
-                var count = response[i].count;
-                var giftcard = `<div class="gift-card">
-                    <img src="giftcard2.jpg" alt="Gift Card 2">
-                    <div class="gift-card-info">
-                        <h2>${name}</h2>
-                        <p>Price: ${amount}p</p>
-                        <div class="quantity-controls">
-                            <button class="quantity-decrease">-</button>
-                            <input type="number" value="0" min="0">
-                            <button class="quantity-increase">+</button>
-                        </div>
-                        <div class="purchase-info">
-                            <p class="sales-quantity">남은 개수: ${count}</p>
-                            <p class="total-price">결제 금액: ${point}원</p>
-                        </div>
-                        <button class="purchase-button" disabled>Buy</button>
-                    </div>
-                </div>`
-                giftCardSection.innerHTML += giftcard;
-                updateQuantityControls(); 
-            }
-           
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            alert(error);
-        }
-    });
-    }
-    loadGiftCard()
-</script>
 </body>
 </html>
